@@ -7,12 +7,12 @@ namespace CommandLibWithUT
 {
     public class Invoker
     {
-        private readonly List<ICommand> _commandList;
         private ICommand _command;
-        
+        private List<ICommand> _commands;
+  
         public Invoker()
         {
-            _commandList = new List<ICommand>();
+            _commands = new List<ICommand>();
         }
 
         public void SetCommand(ICommand command)
@@ -22,8 +22,13 @@ namespace CommandLibWithUT
 
         public void Invoke()
         {
-            _commandList.Add(_command);
             _command.Execute();
         }
+
+        public void UndoInvoke()
+        {
+            _command.Undo();
+        }
+
     }
 }

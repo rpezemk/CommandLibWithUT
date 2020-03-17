@@ -4,5 +4,7 @@
     {
         void Execute();
         void Undo();
+        void Redo();
+        void Print();
     }
 }

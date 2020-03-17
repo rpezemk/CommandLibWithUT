@@ -8,11 +8,41 @@ namespace CommandLibWithUT
     public class Vector
     {
         public string Name;
-        public decimal X { get; set; }
-        public decimal Y { get; set; }
-        public decimal Z { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
 
+        public Vector()
+        {
+            Name = string.Empty;
+            X = 0;
+            Y = 0;
+            Z = 0;
+        }
 
+        public Vector(Vector vector)
+        {
+            this.Name = vector.Name;
+            this.X = vector.X;
+            this.Y = vector.Y;
+            this.Z = vector.Z;
+        }
+
+        public Vector(double x, double y, double z, string name = "")
+        {
+            X = x;
+            Y = y;
+            Z = z;
+            Name = name;
+        }
+
+        public void Set(Vector vector)
+        {
+            this.Name = vector.Name;
+            this.X = vector.X;
+            this.Y = vector.Y;
+            this.Z = vector.Z;
+        }
 
         public Vector Add(Vector vector)
         {
@@ -46,19 +76,12 @@ namespace CommandLibWithUT
             return this;
         }
 
-
-        public Vector Translate(Vector vector)
-        {
-            this.X += vector.X;
-            this.Y += vector.Y;
-            this.Z += vector.Z;
-            return this;
-        }
-
         public Vector GetVector()
         {
-            return new Vector() { X = this.X, Y = this.Y, Z = this.Z };
+            return this; //new Vector() { X = this.X, Y = this.Y, Z = this.Z };
         }
+
+
 
         public void Print()
         {
@@ -69,5 +92,13 @@ namespace CommandLibWithUT
         {
             this.Name = name;
         }
+
+        public void Reset()
+        {
+            X = 0;
+            Y = 0;
+            Z = 0;
+        }
+
     }
 }

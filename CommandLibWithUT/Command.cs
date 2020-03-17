@@ -5,59 +5,105 @@ using System;
 
 namespace CommandLibWithUT
 {
-
-    public enum Color
-    {
-        Red,
-        Green,
-        Blue
-    }
-
-
     public class Command : ICommand
     {
-        private readonly Vector _vector;
-        private readonly AlgebraAction _algebraAction;
+        private  Vector _vector;
+        private Vector _previousVector = new Vector();
+        private readonly Vector _initialVector;
         private readonly Vector _argumentVector;
+
+        private readonly AlgebraAction _algebraAction;
+        private readonly List<ICommand> _aggregatedCommands = new List<ICommand>();
+
+
+        public Command(List<ICommand> _commandList)
+        {
+            _aggregatedCommands = _commandList;
+            //_aggregatedCommands.
+        }
 
         public Command(Vector vector, AlgebraAction algebraAction, Vector argumentVector)
         {
             _vector = vector;
             _algebraAction = algebraAction;
             _argumentVector = argumentVector;
+            _initialVector = new Vector(vector);
+
         }
 
         public void Execute()
         {
-            switch (_algebraAction)
+            if (! _aggregatedCommands.Any())
             {
-                case AlgebraAction.Add:
-                    _vector.Add(_argumentVector);
-                    break;
-                case AlgebraAction.Substract:
-                    _vector.Substract(_argumentVector);
-                    break;
-                case AlgebraAction.Multiply:
-                    _vector.Mulitply(_argumentVector);
-                    break;
+                switch (_algebraAction)
+                {
+                    case AlgebraAction.Add:
+                        _vector.Add(_argumentVector);
+                        break;
+                    case AlgebraAction.Substract:
+                        _vector.Substract(_argumentVector);
+                        break;
+                    case AlgebraAction.Multiply:
+                        _vector.Mulitply(_argumentVector);
+                        break;
+                    case AlgebraAction.Divide:
+                        _vector.Divide(_argumentVector);
+                        break;
+                }
+            }
+            else
+            {
+                foreach (ICommand command in _aggregatedCommands)
+                {
+                    command.Execute();
+                }
             }
         }
+
         public void Undo()
         {
-            switch (_algebraAction)
+            if (!_aggregatedCommands.Any())
             {
-                case AlgebraAction.Substract:
-                    _vector.Add(_argumentVector);
-                    break;
-                case AlgebraAction.Add:
-                    _vector.Substract(_argumentVector);
-                    break;
-                case AlgebraAction.Divide:
-                    _vector.Mulitply(_argumentVector);
-                    break;
-                case AlgebraAction.Multiply:
-                    _vector.Divide(_argumentVector);
-                    break;
+                _previousVector.Set(_vector);
+                _vector.Set(_initialVector); 
+            }
+            else
+            {
+                foreach (ICommand command in _aggregatedCommands)
+                {
+                    command.Undo();
+                }
+            }
+        }
+
+        public void Redo()
+        {
+            if (!_aggregatedCommands.Any())
+            {
+                //_previousVector.Set(_vector);
+                _vector.Set(_previousVector);
+            }
+            else
+            {
+                foreach (ICommand command in _aggregatedCommands)
+                {
+                    command.Undo();
+                }
+            }
+        }
+
+        public void Print()
+        {
+            if (!_aggregatedCommands.Any())
+            {
+                Console.WriteLine($"{_algebraAction.ToString()}  {_vector.Name} {_argumentVector.Name}");
+            }
+            else
+            {
+                foreach (ICommand command in _aggregatedCommands)
+                {
+                    command.Print();
+                }
             }
         }
     }
